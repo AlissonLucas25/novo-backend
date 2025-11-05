@@ -19,7 +19,8 @@ const Cadastro = () => {
   const [success, setSuccess] = useState(''); // Estado para mensagem de sucesso
   const navigate = useNavigate();
 
-  const API_URL = 'http://localhost:3000/api/dogs';
+  const API_URL = `${process.env.REACT_APP_API_URL || 'http://localhost:3000'}/api/dogs`;
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;

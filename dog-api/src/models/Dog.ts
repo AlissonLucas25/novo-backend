@@ -6,6 +6,7 @@ export interface IDog extends Document {
   age: number;
   weight: number;
   owner?: string;
+  foto: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -16,7 +17,8 @@ const DogSchema: Schema = new Schema(
     breed: { type: String, required: true },
     age: { type: Number, required: true },
     weight: { type: Number, required: true },
-    owner: { type: String }
+    owner: { type: String },
+    foto: { type: String, required: true }
   },
   { timestamps: true }
 );

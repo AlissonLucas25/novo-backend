@@ -2,21 +2,24 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import swaggerUi from "swagger-ui-express";
-import { connectDB } from "./config/init-mongodb";
+import connectDB from "./db";
 import dogRoutes from "./routes/dogRoutes";
 import swaggerSpec from "./config/swagger";
+import path from "path";
 
 // Carregar variáveis de ambiente
 dotenv.config();
 
 // Inicializar app Express
 const app = express();
-const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3001;
 
 // Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// Servir arquivos de imagem enviados
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Conectar ao MongoDB
 connectDB().catch((err) => {

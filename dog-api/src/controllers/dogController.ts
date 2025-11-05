@@ -28,10 +28,33 @@ export const getDogById = async (req: Request, res: Response): Promise<void> => 
 // Criar um novo cachorro
 export const createDog = async (req: Request, res: Response): Promise<void> => {
   try {
-    const newDog = new Dog(req.body);
+    const { nome, raca, peso, idade, proprietario, name, breed, weight, age, owner } = req.body as any;
+    const foto = (req as any).file?.filename || null;
+
+    const finalName = name ?? nome;
+    const finalBreed = breed ?? raca;
+    const finalWeight = typeof weight !== 'undefined' ? weight : peso;
+    const finalAge = typeof age !== 'undefined' ? age : idade;
+    const finalOwner = owner ?? proprietario;
+
+    if (!finalName || !finalBreed || finalWeight === undefined || finalAge === undefined || !finalOwner || !foto) {
+      res.status(400).json({ message: 'Todos os campos são obrigatórios (nome, raca, peso, idade, proprietario, foto)' });
+      return;
+    }
+
+    const newDog = new Dog({
+      name: finalName,
+      breed: finalBreed,
+      weight: Number(finalWeight),
+      age: Number(finalAge),
+      owner: finalOwner,
+      foto,
+    });
+
     const savedDog = await newDog.save();
     res.status(201).json(savedDog);
   } catch (error) {
+    console.error('Erro ao criar cão:', error);
     res.status(400).json({ message: 'Erro ao criar cachorro', error });
   }
 };
@@ -39,9 +62,20 @@ export const createDog = async (req: Request, res: Response): Promise<void> => {
 // Atualizar um cachorro
 export const updateDog = async (req: Request, res: Response): Promise<void> => {
   try {
+    const { nome, raca, peso, idade, proprietario, name, breed, weight, age, owner } = req.body as any;
+    const foto = (req as any).file?.filename;
+
+    const updateData: Partial<IDog> & { [key: string]: any } = {};
+    if (nome || name) updateData.name = name ?? nome;
+    if (raca || breed) updateData.breed = breed ?? raca;
+    if (typeof peso !== 'undefined' || typeof weight !== 'undefined') updateData.weight = Number(weight ?? peso);
+    if (typeof idade !== 'undefined' || typeof age !== 'undefined') updateData.age = Number(age ?? idade);
+    if (proprietario || owner) updateData.owner = owner ?? proprietario;
+    if (foto) updateData.foto = foto;
+
     const updatedDog = await Dog.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true }
     );
     if (!updatedDog) {

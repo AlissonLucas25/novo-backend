@@ -6,6 +6,7 @@ import {
   updateDog, 
   deleteDog 
 } from '../controllers/dogController';
+import { upload } from '../config/multer';
 
 const router = Router();
 
@@ -78,7 +79,7 @@ router.get('/:id', getDogById);
  *       400:
  *         description: Dados inválidos
  */
-router.post('/', createDog);
+router.post('/', upload.single('foto'), createDog);
 
 /**
  * @swagger
@@ -116,7 +117,7 @@ router.post('/', createDog);
  *       404:
  *         description: Cachorro não encontrado
  */
-router.put('/:id', updateDog);
+router.put('/:id', upload.single('foto'), updateDog);
 
 /**
  * @swagger

@@ -8,8 +8,9 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const API_URL = 'http://localhost:3000/api/dogs';
-  const BACKEND_BASE_URL = 'http://localhost:3000/';
+  const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+  const API_URL = `${BASE_URL}/api/dogs`;
+  const BACKEND_BASE_URL = `${BASE_URL}/`;
 
   useEffect(() => {
     const fetchDogs = async () => {
